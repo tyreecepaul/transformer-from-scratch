@@ -37,15 +37,16 @@ def get_or_build_tokenizer(config, ds, lang):
 
 def get_ds(config):
     ds_raw = load_dataset('opus_books', f'{config["lang_src"]}-{config["lang_tgt"]}', split='train')
+
     tokenizer_src = get_or_build_tokenizer(config, ds_raw, config['lang_src'])
     tokenizer_tgt = get_or_build_tokenizer(config, ds_raw, config['lang_tgt'])
 
     train_ds_size = int(0.9 * len(ds_raw))
     val_ds_size = len(ds_raw) - train_ds_size
-    train_ds_size, val_ds_raw = random_split(ds_raw, [train_ds_size, val_ds_size])
+    train_ds_raw, val_ds_raw = random_split(ds_raw, [train_ds_size, val_ds_size])
 
-    train_ds = BilingualDataset(train_ds_size, tokenizer_src, tokenizer_tgt, config["lang_src"], config["lang_tgt"], config["seq_len"])
-    val_ds = BilingualDataset(val_ds_size, tokenizer_src, tokenizer_tgt, config["lang_src"], config["lang_tgt"], config["seq_len"])
+    train_ds = BilingualDataset(train_ds_raw, tokenizer_src, tokenizer_tgt, config["lang_src"], config["lang_tgt"], config["seq_len"])
+    val_ds = BilingualDataset(val_ds_raw, tokenizer_src, tokenizer_tgt, config["lang_src"], config["lang_tgt"], config["seq_len"])
 
     max_len_src = 0
     max_len_tgt = 0
@@ -64,8 +65,8 @@ def get_ds(config):
 
     return train_dataloader, val_dataloader, tokenizer_src, tokenizer_tgt
 
-def get_model(config, vocab_size_Len, vocab_tgt_len):
-    model = build_transform(vocab_size_Len, vocab_tgt_len, config['seq_len'], config['seq_len'], config['d_model']) 
+def get_model(config, vocab_size_len, vocab_tgt_len):
+    model = build_transform(vocab_size_len, vocab_tgt_len, config['seq_len'], config['seq_len'], config['d_model']) 
     return model
 
 def train_model(config):
