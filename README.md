@@ -77,7 +77,7 @@ $$
 \mathbf{P} \in \mathbb{R}^{n \times d_{\text{model}}}
 $$ 
 
-are fixed, deterministic vectors added to the input embeddings to provide information about token order. For a token at position \( pos \), the positional encoding components are given by the two equations:
+are fixed, deterministic vectors added to the input embeddings to provide information about token order. For a token at position $pos$, the positional encoding components are given by the two equations:
 
 $$
 PE(pos, 2i) = \sin \left( \frac{pos}{10000^{\frac{2i}{d_{\text{model}}}}} \right)
@@ -89,29 +89,25 @@ $$
 
 for $i = 0, 1, \dots, \frac{d_{\text{model}}}{2} - 1$.
 
-The input to the encoder at position $pos$ is then the sum of the token embedding $\mathbf{X}_{pos} \in \mathbb{R}^{d_{\text{model}}}$ and the positional encoding
+The input to the encoder at position $pos$ is then the sum of the token embedding `X_pos ∈ ℝ^{d_model}` and the positional encoding
 
-$$ 
-\mathbf{P}_{pos} \in \mathbb{R}^{d_{\text{model}}}
-$$
+`P_pos ∈ ℝ^{d_model}`
 
-:
+`Z_pos = X_pos + P_pos`
 
-$$
-\mathbf{Z}_{pos} = \mathbf{X}_{pos} + \mathbf{P}_{pos}
-$$
-
-where $\mathbf{Z} \in \mathbb{R}^{n \times d_{\text{model}}}$ is the final input embedding matrix with positional information, typically with \( n = 512 \) for fixed maximum sequence length.
-
----
+where $\mathbf{Z} \in \mathbb{R}^{n \times d_{\text{model}}}$ is the final input embedding matrix with positional information, typically with $n = 512$ for fixed maximum sequence length.
 
 #### Why Use Trigonometric Functions?
 
-The sine and cosine functions naturally encode periodic, continuous patterns that enable the model to easily learn and generalize relative positions of tokens. Because these functions vary smoothly and have different frequencies across embedding dimensions, the model can infer both absolute and relative positions by attending to these patterns. This design ensures that for any fixed offset \( k \), the positional encoding satisfies a linear relationship:
+The sine and cosine functions naturally encode periodic, continuous patterns that enable the model to easily learn and generalize relative positions of tokens. Because these functions vary smoothly and have different frequencies across embedding dimensions, the model can infer both absolute and relative positions by attending to these patterns. This design ensures that for any fixed offset $k$, the positional encoding satisfies a linear relationship:
 
 $$
 PE(pos + k) = f(PE(pos), k)
 $$
 
 making relative positioning easier to capture. Empirically, plotting the positional encoding components shows regular oscillatory patterns that the model can leverage to understand token order.
+
+### Mulit-Head Attention
+#### Self Attention
+
 
